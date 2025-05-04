@@ -8,8 +8,8 @@
 - Metrics Server
 - Horizontal Pod Autoscaler (HPA)
 - Prometheus + Grafana
-
 ---
+##  Ссылка на видеообзор: 
 
 ##  Шаги по развёртыванию
 
