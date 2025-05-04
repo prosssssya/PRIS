@@ -9,7 +9,7 @@
 - Horizontal Pod Autoscaler (HPA)
 - Prometheus + Grafana
 ---
-##  Ссылка на видеообзор: 
+##  Ссылка на видеообзор работы: https://drive.google.com/file/d/1pcItkeOUR1YqPM599I9Rq0yX7SFEVStl/view?usp=sharing 
 ---
 ##  Шаги по развёртыванию
 
