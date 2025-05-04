@@ -10,7 +10,7 @@
 - Prometheus + Grafana
 ---
 ##  Ссылка на видеообзор: 
-
+---
 ##  Шаги по развёртыванию
 
 ```bash
@@ -45,3 +45,6 @@ helm install prometheus prometheus-community/kube-prometheus-stack
 # Подключение к Grafana
 kubectl port-forward svc/prometheus-grafana 3000:80
 ```
+---
+## Нащ дашборд :)
+<img width="1009" alt="image" src="https://github.com/user-attachments/assets/cb66ed8e-d1d8-4a85-8644-d1843436effb" />
