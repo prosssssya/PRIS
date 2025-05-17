@@ -1,3 +1,5 @@
+# Работу выполнили: Исмагилова Карина, Шурубова Прасковья  
+---
 # Лабораторная работа k8s
 # Flask + Kubernetes + Minikube
 ---
@@ -74,10 +76,12 @@ kubectl port-forward svc/prometheus-grafana 3000:80
 # Из папки services/products
  uvicorn main:app --port 8003
 ```
+---
 2. Затем запускаем gateway.js из директории gateway
 ```bash
 node gateway.js 
 ```
+---
 Переходим по необходимым адресам и производим проверку работы
 Ниже скрипты для запросов:
 ```bash
@@ -138,7 +142,7 @@ mutation {
 }
 ```
 Аналогичные запросы для обновления и удаления продуктов и заказов, ниже приведены скриншоты с обработкой запросов  
-
+---
 ![IMAGE 2025-05-17 18:02:58](https://github.com/user-attachments/assets/caf030ed-7298-4af8-b689-fcf61b34157f)
 ![IMAGE 2025-05-17 18:03:08](https://github.com/user-attachments/assets/96b9f9c4-8719-42ed-b89b-4a2720ce7d5e)
 ![IMAGE 2025-05-17 18:03:20](https://github.com/user-attachments/assets/4add76c2-0d2e-4dfd-9743-2f09d987d1a1)
