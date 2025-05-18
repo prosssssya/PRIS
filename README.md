@@ -63,7 +63,7 @@ kubectl port-forward svc/prometheus-grafana 3000:80
 - JavaScript
 - HTML
 ---
-##  Ссылка на видеообзор работы: https://drive.google.com/file/d/1pcItkeOUR1YqPM599I9Rq0yX7SFEVStl/view?usp=sharing 
+##  Ссылка на видеообзор работы: https://drive.google.com/file/d/13786XVTTbwIokRwFTCGOM3jY8uA3sxDq/view?usp=sharing 
 ---
 ##  Шаги по развёртыванию
 Во-первых необходимо установить все зависимости из requirements.txt
