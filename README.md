@@ -149,5 +149,43 @@ mutation {
 ![IMAGE 2025-05-17 18:03:29](https://github.com/user-attachments/assets/1a947773-6e0d-4625-ac2b-89c679bc183d)
 ![IMAGE 2025-05-17 18:03:38](https://github.com/user-attachments/assets/a0b3c421-b9e5-4500-b44d-8a6a3485b9d9)
 
+# Лабораторная работа "Работа с Big Data"
+# Flask + ML WebApp для анализа данных
+---
+## Стек технологий
+- Python + Flask
+- Pandas
+- Scikit-learn
+- Matplotlib
+- Seaborn
+---
+##  Ссылка на видеообзор работы: 
+---
+##  Шаги по развёртыванию
+
+```bash
+# 1. Клонируем или переходим в папку проекта
+cd lab-3
+
+# 2. Создание виртуального окружения
+python -m venv venv
+venv\Scripts\activate        
+
+# 3. Установка зависимостей
+pip install -r requirements.txt
+
+# 4. Запуск Flask-приложения
+python app.py
+```
+---
+## Шаги после запуска:
+- Загружаем CSV-файлы с числовыми признаками
+- Выбираем нужные столбцы X и Y
+- Запускаем процесс обучения модели
+- Получем  график "Факт vs Прогноз", тепловую карту, рассчитанные метрики MSE и R²
+## Результат работы с небольшим набором данных и с 100000 строками:)
+![image](https://github.com/user-attachments/assets/6c4285ec-d89c-4eec-be96-40b8626b881c)
+![image](https://github.com/user-attachments/assets/abfe8164-a70a-4068-82bf-9eb54443a2c5)
+![image](https://github.com/user-attachments/assets/6c510e9b-1892-4d98-8f7a-9f04ac006201)
 
 
