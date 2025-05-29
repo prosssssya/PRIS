@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление пользователями</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f7f7;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .user-list {
+            flex: 1;
+        }
+        .user-form {
+            flex: 1;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+        button {
+            cursor: pointer;
+            padding: 8px 16px;
+            margin: 2px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .edit-btn {
+            background-color: #c8e6c9;
+            color: #2e7d32;
+        }
+        .delete-btn {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        input {
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+        button[type="submit"] {
+            padding: 10px;
+            background-color: #bbdefb;
+            color: #0d47a1;
+        }
+        .error {
+            color: #d32f2f;
+            margin-top: 10px;
+        }
+        h1, h2 {
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Управление пользователями</h1>
+    <div class="container">
+        <div class="user-list">
+            <h2>Список пользователей</h2>
+            <div id="error" class="error"></div>
+            <table id="usersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Имя</th>
+                        <th>Email</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="user-form">
+            <h2 id="formTitle">Добавить пользователя</h2>
+            <form id="userForm">
+                <input type="hidden" id="userId">
+                <input type="text" id="name" placeholder="Имя" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <button type="submit">Сохранить</button>
+                <button type="button" id="cancelBtn" style="display: none;">Отмена</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:4000/graphql';
+        let isEditing = false;
+        let currentUserId = null;
+
+        function showError(message) {
+            const errorElement = document.getElementById('error');
+            errorElement.textContent = message;
+            setTimeout(() => errorElement.textContent = '', 5000);
+        }
+
+        async function fetchGraphQL(query, variables = {}) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query,
+                        variables,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.errors) {
+                    throw new Error(result.errors[0].message);
+                }
+
+                return result;
+            } catch (error) {
+                showError(`Ошибка: ${error.message}`);
+                throw error;
+            }
+        }
+
+        async function fetchUsers() {
+            const query = `
+                query {
+                    users {
+                        id
+                        name
+                        email
+                    }
+                }
+            `;
+            const result = await fetchGraphQL(query);
+            return result.data.users;
+        }
+
+        async function createUser(name, email) {
+            const mutation = `
+                mutation CreateUser($input: UserInput!) {
+                    createUser(input: $input) {
+                        id
+                        name
+                        email
+                    }
+                }
+            `;
+            const variables = {
+                input: {
+                    name,
+                    email
+                }
+            };
+            const result = await fetchGraphQL(mutation, variables);
+            return result.data.createUser;
+        }
+
+        async function updateUser(id, name, email) {
+            const mutation = `
+                mutation UpdateUser($id: Int!, $input: UserInput!) {
+                    updateUser(id: $id, input: $input) {
+                        id
+                        name
+                        email
+                    }
+                }
+            `;
+            const variables = {
+                id: parseInt(id),
+                input: {
+                    name,
+                    email
+                }
+            };
+            const result = await fetchGraphQL(mutation, variables);
+            return result.data.updateUser;
+        }
+
+        async function deleteUser(id) {
+            const mutation = `
+                mutation DeleteUser($id: Int!) {
+                    deleteUser(id: $id)
+                }
+            `;
+            const variables = { id: parseInt(id) };
+            const result = await fetchGraphQL(mutation, variables);
+            return result.data.deleteUser;
+        }
+
+        async function displayUsers() {
+            try {
+                const users = await fetchUsers();
+                const tbody = document.querySelector('#usersTable tbody');
+                tbody.innerHTML = '';
+
+                if (users.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4">Нет пользователей</td></tr>';
+                    return;
+                }
+
+                users.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.id}</td>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>
+                            <button class="edit-btn" data-id="${user.id}">Изменить</button>
+                            <button class="delete-btn" data-id="${user.id}">Удалить</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', () => editUser(btn.dataset.id));
+                });
+
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', () => deleteUserHandler(btn.dataset.id));
+                });
+            } catch (error) {
+                console.error('Ошибка при загрузке пользователей:', error);
+            }
+        }
+
+        document.getElementById('userForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+
+            try {
+                if (isEditing) {
+                    await updateUser(currentUserId, name, email);
+                    resetForm();
+                } else {
+                    await createUser(name, email);
+                    document.getElementById('userForm').reset();
+                }
+
+                await displayUsers();
+            } catch (error) {
+                console.error('Ошибка при сохранении пользователя:', error);
+            }
+        });
+
+        document.getElementById('cancelBtn').addEventListener('click', resetForm);
+
+        async function editUser(id) {
+            try {
+                const users = await fetchUsers();
+                const user = users.find(u => u.id === parseInt(id));
+
+                if (user) {
+                    isEditing = true;
+                    currentUserId = user.id;
+                    document.getElementById('formTitle').textContent = 'Редактировать пользователя';
+                    document.getElementById('userId').value = user.id;
+                    document.getElementById('name').value = user.name;
+                    document.getElementById('email').value = user.email;
+                    document.getElementById('cancelBtn').style.display = 'inline-block';
+                }
+            } catch (error) {
+                console.error('Ошибка при редактировании пользователя:', error);
+            }
+        }
+
+        async function deleteUserHandler(id) {
+            if (confirm('Вы уверены, что хотите удалить этого пользователя?')) {
+                try {
+                    await deleteUser(id);
+                    await displayUsers();
+                } catch (error) {
+                    console.error('Ошибка при удалении пользователя:', error);
+                }
+            }
+        }
+
+        function resetForm() {
+            isEditing = false;
+            currentUserId = null;
+            document.getElementById('formTitle').textContent = 'Добавить пользователя';
+            document.getElementById('userForm').reset();
+            document.getElementById('cancelBtn').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            displayUsers();
+        });
+    </script>
+</body>
+</html>
