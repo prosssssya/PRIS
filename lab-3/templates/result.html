@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Результаты модели</title>
+</head>
+<body>
+    <h2>Результаты обучения</h2>
+    <p><strong>MSE:</strong> {{ mse }}</p>
+    <p><strong>R²:</strong> {{ r2 }}</p>
+
+    <h3>Факт vs Прогноз</h3>
+    <img src="{{ scatter_url }}" alt="scatter plot" width="600">
+
+    <h3>Корреляция признаков</h3>
+    <img src="{{ corr_url }}" alt="correlation matrix" width="600">
+</body>
+</html>
