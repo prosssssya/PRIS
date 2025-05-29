@@ -159,7 +159,7 @@ mutation {
 - Matplotlib
 - Seaborn
 ---
-##  Ссылка на видеообзор работы: 
+##  Ссылка на видеообзор работы: https://drive.google.com/file/d/1pWu022xFElIzU1jStlPmphheLLor2oDm/view?usp=sharing  
 ---
 ##  Шаги по развёртыванию
 
